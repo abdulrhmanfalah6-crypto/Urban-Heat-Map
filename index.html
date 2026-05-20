@@ -1,293 +1,421 @@
 from pathlib import Path
-import shutil, zipfile, textwrap, os
+import base64, mimetypes, zipfile, shutil, os, textwrap
 
 base = Path("/mnt/data")
-site = base / "RAKCOC_Website"
-site.mkdir(exist_ok=True)
+out_dir = base / "RAKCOC_FIXED_SINGLE_FILE"
+out_dir.mkdir(exist_ok=True)
 
-# Source files uploaded by user
-assets = {
-    "logo.jpg": base / "8bbf4d1f-30ff-487d-85c8-6381cd8c309c.jpg",
-    "dhayah-fort.jpg": base / "Ras+Al+Khaimah+-+Dhayah+Fort+(1).jpg",
-    "oryx.jpg": base / "Oryx+-+Al+Wadi+Equestrian+Adventure+Center.jpg",
-    "raptor-show.jpg": base / "Ras+Al+Khaimah+-++Raptor+Show.jpg",
-    "al-wadi.jpg": base / "Ras+Al+Khaimah+-+Banyan+Tree+Al+Wadi.jfif",
-    "survey-poster.png": base / "6ca5df7b-b57c-4dd1-a415-3ad1f15dde22.png",
-    "rak-heat-map-strategy-2026.docx": base / "final.docx",
+def data_uri(path):
+    path = Path(path)
+    mime = mimetypes.guess_type(path.name)[0] or "image/jpeg"
+    b64 = base64.b64encode(path.read_bytes()).decode("utf-8")
+    return f"data:{mime};base64,{b64}"
+
+# Use uploaded image paths
+paths = {
+    "logo": base / "8bbf4d1f-30ff-487d-85c8-6381cd8c309c.jpg",
+    "dhayah": base / "Ras+Al+Khaimah+-+Dhayah+Fort+(1).jpg",
+    "oryx": base / "Oryx+-+Al+Wadi+Equestrian+Adventure+Center.jpg",
+    "raptor": base / "Ras+Al+Khaimah+-++Raptor+Show.jpg",
+    "wadi": base / "Ras+Al+Khaimah+-+Banyan+Tree+Al+Wadi.jfif",
+    "survey": base / "6ca5df7b-b57c-4dd1-a415-3ad1f15dde22.png",
 }
 
-for name, src in assets.items():
-    if src.exists():
-        shutil.copy(src, site / name)
+uris = {k: data_uri(v) for k, v in paths.items() if v.exists()}
 
-style_css = r"""
-:root{
+# Copy report too
+docx_src = base / "final.docx"
+docx_name = "rak-heat-map-strategy-2026.docx"
+if docx_src.exists():
+    shutil.copy(docx_src, out_dir / docx_name)
+
+html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAKCOC Website</title>
+<style>
+:root {{
   --red:#8b0025;
   --red2:#b00032;
   --green:#1f7a5a;
   --dark:#1f2933;
   --gray:#f5f7f8;
-  --light:#ffffff;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{font-family:Arial, Helvetica, sans-serif;background:var(--gray);color:#222;line-height:1.7}
-header{
-  position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.96);
-  display:flex;justify-content:space-between;align-items:center;padding:12px 45px;
-  box-shadow:0 3px 14px rgba(0,0,0,.10)
-}
-.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--red);font-weight:800;font-size:22px}
-.logo img{width:68px;height:68px;object-fit:contain}
-nav ul{list-style:none;display:flex;gap:24px;align-items:center}
-nav a{text-decoration:none;color:#222;font-weight:700;transition:.3s}
-nav a:hover,.active{color:var(--red2)}
-.hero{
-  min-height:92vh;display:flex;align-items:center;justify-content:center;text-align:center;color:white;padding:30px;
-  background:linear-gradient(rgba(0,0,0,.50),rgba(0,0,0,.35)),url('al-wadi.jpg') center/cover no-repeat
-}
-.hero h1{font-size:58px;line-height:1.1;margin-bottom:18px;animation:fadeUp .9s ease}
-.hero p{font-size:22px;max-width:920px;margin:auto;animation:fadeUp 1.2s ease}
-.btn{display:inline-block;margin-top:28px;background:var(--red2);color:white;text-decoration:none;padding:13px 30px;border-radius:30px;font-weight:800;transition:.3s}
-.btn:hover{background:var(--green);transform:translateY(-3px)}
-.page-title{
-  background:linear-gradient(rgba(139,0,37,.88),rgba(139,0,37,.82)),url('dhayah-fort.jpg') center/cover no-repeat;
-  color:white;text-align:center;padding:90px 25px
-}
-.page-title h1{font-size:46px;margin-bottom:8px}
-.container{max-width:1150px;margin:auto;padding:65px 25px}
-.section-title{text-align:center;color:var(--red);font-size:36px;margin-bottom:30px}
-.cards,.gallery,.resource-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
-.card,.project-card,.resource-card,.contact-card{
-  background:white;border-radius:18px;padding:28px;box-shadow:0 8px 24px rgba(0,0,0,.09);
-  transition:.3s;border-top:5px solid transparent
-}
-.card:hover,.project-card:hover,.resource-card:hover{transform:translateY(-6px);border-top-color:var(--red2)}
-.card h3,.project-card h3,.resource-card h3{color:var(--red);margin-bottom:10px}
-.gallery img,.project-card img{width:100%;height:240px;object-fit:cover;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.13)}
-.project-card img{height:260px;margin-bottom:15px}
-.resource-icon{font-size:48px;margin-bottom:10px}
-.form input,.form textarea{
-  width:100%;padding:13px;margin:9px 0;border:1px solid #ddd;border-radius:10px;font-size:16px
-}
-.form button{border:0;cursor:pointer}
-.map{
-  margin-top:25px;background:#e5e7eb;border-radius:16px;padding:50px;text-align:center;color:#555
-}
-footer{background:var(--dark);color:white;padding:35px 25px;text-align:center}
-.social{margin-top:12px}
-.social span{display:inline-block;margin:0 8px;background:var(--red2);padding:8px 11px;border-radius:50%}
-@keyframes fadeUp{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:850px){
-  header{flex-direction:column;padding:12px}
-  nav ul{flex-wrap:wrap;justify-content:center;gap:12px;margin-top:10px}
-  .hero h1{font-size:36px}
-  .hero p{font-size:18px}
-  .page-title h1{font-size:34px}
-}
-"""
+}}
+* {{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}}
+html {{
+  scroll-behavior:smooth;
+}}
+body {{
+  font-family: Arial, Helvetica, sans-serif;
+  background:var(--gray);
+  color:#222;
+  line-height:1.7;
+}}
+header {{
+  position:sticky;
+  top:0;
+  z-index:999;
+  background:rgba(255,255,255,0.97);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 45px;
+  box-shadow:0 3px 14px rgba(0,0,0,0.12);
+}}
+.logo {{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:var(--red);
+  font-weight:800;
+  font-size:22px;
+}}
+.logo img {{
+  width:68px;
+  height:68px;
+  object-fit:contain;
+}}
+nav ul {{
+  list-style:none;
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+}}
+nav button {{
+  background:none;
+  border:0;
+  color:#222;
+  font-weight:700;
+  font-size:16px;
+  cursor:pointer;
+  transition:0.3s;
+}}
+nav button:hover, nav button.active {{
+  color:var(--red2);
+}}
+.page {{
+  display:none;
+}}
+.page.active {{
+  display:block;
+  animation:fade .4s ease;
+}}
+.hero {{
+  min-height:90vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  color:white;
+  padding:30px;
+  background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.35)), url('{uris.get("wadi","")}') center/cover no-repeat;
+}}
+.hero h1 {{
+  font-size:58px;
+  line-height:1.1;
+  margin-bottom:18px;
+}}
+.hero p {{
+  max-width:900px;
+  margin:auto;
+  font-size:22px;
+}}
+.btn {{
+  display:inline-block;
+  margin-top:26px;
+  background:var(--red2);
+  color:white;
+  padding:13px 30px;
+  border-radius:30px;
+  text-decoration:none;
+  font-weight:bold;
+  border:0;
+  cursor:pointer;
+}}
+.btn:hover {{
+  background:var(--green);
+}}
+.page-title {{
+  color:white;
+  text-align:center;
+  padding:95px 25px;
+  background:linear-gradient(rgba(139,0,37,.9),rgba(139,0,37,.82)), url('{uris.get("dhayah","")}') center/cover no-repeat;
+}}
+.page-title h1 {{
+  font-size:46px;
+}}
+.container {{
+  max-width:1150px;
+  margin:auto;
+  padding:65px 25px;
+}}
+.section-title {{
+  text-align:center;
+  font-size:36px;
+  color:var(--red);
+  margin-bottom:30px;
+}}
+.cards, .gallery, .resources {{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:24px;
+}}
+.card, .project, .resource, .contact-box {{
+  background:white;
+  padding:28px;
+  border-radius:18px;
+  box-shadow:0 8px 24px rgba(0,0,0,.09);
+  transition:.3s;
+  border-top:5px solid transparent;
+}}
+.card:hover, .project:hover, .resource:hover {{
+  transform:translateY(-6px);
+  border-top-color:var(--red2);
+}}
+.card h3, .project h3, .resource h3 {{
+  color:var(--red);
+  margin-bottom:10px;
+}}
+.gallery img, .project img {{
+  width:100%;
+  height:240px;
+  object-fit:cover;
+  border-radius:16px;
+  box-shadow:0 6px 18px rgba(0,0,0,.13);
+}}
+.project img {{
+  margin-bottom:15px;
+}}
+.icon {{
+  font-size:48px;
+  margin-bottom:10px;
+}}
+.form input, .form textarea {{
+  width:100%;
+  padding:13px;
+  margin:9px 0;
+  border:1px solid #ddd;
+  border-radius:10px;
+  font-size:16px;
+}}
+.map {{
+  margin-top:25px;
+  padding:50px;
+  background:#e5e7eb;
+  border-radius:16px;
+  text-align:center;
+  color:#555;
+}}
+footer {{
+  background:var(--dark);
+  color:white;
+  text-align:center;
+  padding:35px 25px;
+}}
+.social span {{
+  display:inline-block;
+  margin:12px 7px 0;
+  background:var(--red2);
+  padding:8px 11px;
+  border-radius:50%;
+}}
+@keyframes fade {{
+  from {{opacity:0; transform:translateY(10px);}}
+  to {{opacity:1; transform:translateY(0);}}
+}}
+@media(max-width:850px) {{
+  header {{
+    flex-direction:column;
+    padding:12px;
+  }}
+  nav ul {{
+    justify-content:center;
+    gap:12px;
+    margin-top:10px;
+  }}
+  nav button {{
+    font-size:14px;
+  }}
+  .hero h1 {{
+    font-size:35px;
+  }}
+  .hero p {{
+    font-size:18px;
+  }}
+  .page-title h1 {{
+    font-size:34px;
+  }}
+}}
+</style>
+</head>
+<body>
 
-header = """
 <header>
-  <a class="logo" href="index.html">
-    <img src="logo.jpg" alt="RAKCOC Logo">
+  <div class="logo">
+    <img src="{uris.get("logo","")}" alt="RAKCOC Logo">
     <span>RAKCOC</span>
-  </a>
+  </div>
   <nav>
     <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About Us</a></li>
-      <li><a href="services.html">Services</a></li>
-      <li><a href="projects.html">Projects</a></li>
-      <li><a href="books.html">Books and Resources</a></li>
-      <li><a href="contact.html">Contact Us</a></li>
+      <li><button class="nav active" onclick="showPage('home', this)">Home</button></li>
+      <li><button class="nav" onclick="showPage('about', this)">About Us</button></li>
+      <li><button class="nav" onclick="showPage('services', this)">Services</button></li>
+      <li><button class="nav" onclick="showPage('projects', this)">Projects</button></li>
+      <li><button class="nav" onclick="showPage('books', this)">Books and Resources</button></li>
+      <li><button class="nav" onclick="showPage('contact', this)">Contact Us</button></li>
     </ul>
   </nav>
 </header>
-"""
 
-footer = """
+<main>
+  <section id="home" class="page active">
+    <div class="hero">
+      <div>
+        <h1>RAK Center for Outdoor Comfort</h1>
+        <p>Advancing sustainability, outdoor thermal comfort, urban heat mapping, and climate resilience in Ras Al Khaimah and the Middle East region.</p>
+        <button class="btn" onclick="showPageByName('about')">Explore RAKCOC</button>
+      </div>
+    </div>
+    <section class="container">
+      <h2 class="section-title">Ras Al Khaimah Outdoor Comfort</h2>
+      <p style="text-align:center;max-width:900px;margin:0 auto 35px;">
+        RAKCOC supports practical applied research on outdoor comfort through modeling, testing, design advisory, education, guidelines, and long-term monitoring.
+      </p>
+      <div class="gallery">
+        <img src="{uris.get("dhayah","")}" alt="Dhayah Fort">
+        <img src="{uris.get("oryx","")}" alt="Oryx">
+        <img src="{uris.get("raptor","")}" alt="Raptor Show">
+        <img src="{uris.get("survey","")}" alt="Outdoor Comfort Survey">
+      </div>
+    </section>
+  </section>
+
+  <section id="about" class="page">
+    <div class="page-title"><h1>About Us</h1><p>RAK Center for Outdoor Comfort</p></div>
+    <section class="container">
+      <div class="cards">
+        <div class="card"><h3>About Us</h3><p>RAK Center for Outdoor Comfort (RAKCOC), a joint initiative between RAK Municipality and AURAK, focuses on practical applied research on outdoor comfort in the Middle East region. The Scientific program of this feasibility period primarily aims to support adopting outdoor thermal comfort solutions in Ras Al Khaimah and the region through modeling testing and implementing activities that provide various services, such as design advisory and guidelines, education, testing, etc.</p><p>In its development strategy, the Center plans to expand its scope to adjacent fields such as micro-climate management, climate change adaptation, outdoor landscape design, urban heat island reduction, Nature Based Solutions (NBS), and others as may be relevant.</p></div>
+        <div class="card"><h3>Vision</h3><p>RAKCOC is the first center in the Middle East to focus on a better understanding of the richness of microclimatic characteristics in outdoor urban spaces and the comfort implications for the people using them.</p><p>By controlling sources of discomfort, sedentary activities, as well as the use of public transport, cycling, and walking, are promoted. The ultimate goal is to create thriving spaces that attract and accommodate a substantial number of people.</p></div>
+        <div class="card"><h3>Mission</h3><p>RAKOC attempts to understand the thermal conditions outdoors. Models are currently unavailable for hot and humid countries, and solutions still need to be well-designed. There needs to be a greater understanding of the physical and human parameters in these spaces and the subjective responses of end users.</p><p>The center also relies on research based on feedback from facilities equipped with instruments and long-term monitoring.</p></div>
+        <div class="card"><h3>Our Team</h3><p>The center’s establishment is a recent development, bringing together a dynamic interdisciplinary team comprising AURAK and RAK municipality members. The center is situated within the AURAK campus (Building K) and is a hub for collaboration and knowledge exchange.</p><p>The interdisciplinary team primarily focuses on harnessing their expertise in measurement and modeling. We have formed valuable partnerships with esteemed organizations such as RAK Academy, RAK Hospitality, RAK Properties, and Marjan Island, who contribute to our collective efforts.</p><p>In particular, the Engineering School of AURAK actively participates through the involvement of the Architecture Department and Mechanical Engineering Department. Their engagement ensures a comprehensive approach to address the center's objectives effectively.</p></div>
+      </div>
+    </section>
+  </section>
+
+  <section id="services" class="page">
+    <div class="page-title"><h1>Services</h1><p>Research, testing, design guidance, and environmental analysis</p></div>
+    <section class="container">
+      <div class="cards">
+        <div class="card"><h3>Urban Heat Mapping</h3><p>Mapping surface temperature and identifying hot and cool areas across Ras Al Khaimah.</p></div>
+        <div class="card"><h3>Outdoor Thermal Comfort Studies</h3><p>Studying outdoor thermal conditions in hot and humid environments.</p></div>
+        <div class="card"><h3>GIS and Spatial Analysis</h3><p>Using GIS tools to support climate research and urban planning decisions.</p></div>
+        <div class="card"><h3>Environmental Monitoring</h3><p>Monitoring temperature, humidity, air quality, and outdoor comfort indicators.</p></div>
+        <div class="card"><h3>Design Advisory and Guidelines</h3><p>Providing recommendations for shading, greenery, materials, and public spaces.</p></div>
+        <div class="card"><h3>Micro-Climate Management</h3><p>Analyzing microclimate conditions and proposing suitable outdoor comfort solutions.</p></div>
+        <div class="card"><h3>Climate Change Adaptation</h3><p>Supporting resilient strategies for future urban and environmental conditions.</p></div>
+        <div class="card"><h3>Urban Heat Island Reduction</h3><p>Reducing urban heat through planning, materials, nature-based solutions, and monitoring.</p></div>
+        <div class="card"><h3>Education and Research</h3><p>Supporting students, researchers, and partners through applied research and training.</p></div>
+      </div>
+    </section>
+  </section>
+
+  <section id="projects" class="page">
+    <div class="page-title"><h1>Projects</h1><p>Research and applied projects for Ras Al Khaimah</p></div>
+    <section class="container">
+      <div class="cards">
+        <div class="project"><img src="{uris.get("survey","")}" alt="Heat Map Strategy"><h3>Ras Al Khaimah Heat Map Strategy 2026</h3><p>A strategy to identify and analyze hot and cool areas across Ras Al Khaimah and support sustainable climate-resilient development.</p></div>
+        <div class="project"><img src="{uris.get("survey","")}" alt="Survey"><h3>Outdoor Comfort Survey</h3><p>A survey to understand outdoor comfort, including heat, shade, humidity, wind, walkability, seating, and safety.</p></div>
+        <div class="project"><img src="{uris.get("dhayah","")}" alt="Modeling"><h3>Urban Environment Modeling</h3><p>GIS-based spatial modeling and scenario development to understand urban heat behavior and support planning.</p></div>
+        <div class="project"><img src="{uris.get("wadi","")}" alt="Air Quality"><h3>Air Quality Analysis</h3><p>Assessment of PM2.5, CO₂, temperature, and relative humidity in relation to outdoor comfort.</p></div>
+        <div class="project"><img src="{uris.get("oryx","")}" alt="Population"><h3>Population Mapping</h3><p>Mapping population distribution to understand heat exposure, vulnerability, and high-risk areas.</p></div>
+        <div class="project"><img src="{uris.get("raptor","")}" alt="Sustainable Development"><h3>Sustainable Urban Development</h3><p>Supporting comfortable, livable, and climate-resilient outdoor spaces in Ras Al Khaimah.</p></div>
+      </div>
+    </section>
+  </section>
+
+  <section id="books" class="page">
+    <div class="page-title"><h1>Books and Resources</h1><p>Reports, guidelines, research documents, and publications</p></div>
+    <section class="container">
+      <div class="resources">
+        <div class="resource"><div class="icon">📘</div><h3>Ras Al Khaimah Heat Map Strategy 2026</h3><p>A report about urban heat mapping, outdoor comfort, air quality, and climate-resilient development.</p><a class="btn" href="{docx_name}" download>Download Report</a></div>
+        <div class="resource"><div class="icon">📗</div><h3>Outdoor Comfort Guidelines</h3><p>Future guidelines for shade, greenery, walkability, seating, materials, and outdoor comfort improvement.</p></div>
+        <div class="resource"><div class="icon">📙</div><h3>Research and Student Work</h3><p>Student studies, field measurements, survey results, and applied research documents can be added here.</p></div>
+      </div>
+    </section>
+  </section>
+
+  <section id="contact" class="page">
+    <div class="page-title"><h1>Contact Us</h1><p>RAK Center for Outdoor Comfort</p></div>
+    <section class="container">
+      <div class="contact-box">
+        <h2 style="color:#8b0025;margin-bottom:15px;">For More Information</h2>
+        <p><strong>Ms. Ivy Tanedo</strong></p>
+        <p>Office Coordinator</p>
+        <p>RAK Center for Outdoor Comfort</p>
+        <p>American University of Ras Al Khaimah</p>
+        <p><strong>Tel:</strong> +971-7-246-8804</p>
+        <p><strong>Email:</strong> ivy.tanedo@aurak.ac.ae</p>
+        <p><strong>Web:</strong> www.aurak.ac.ae</p>
+      </div>
+      <div class="contact-box" style="margin-top:25px;">
+        <h2 style="color:#8b0025;">Contact Form</h2>
+        <form class="form" onsubmit="alert('This is a demo form. To receive messages, connect it to an email service.'); return false;">
+          <input type="text" placeholder="Your Name">
+          <input type="email" placeholder="Your Email">
+          <input type="text" placeholder="Subject">
+          <textarea rows="6" placeholder="Your Message"></textarea>
+          <button class="btn" type="submit">Send Message</button>
+        </form>
+      </div>
+      <div class="map">
+        <h3>Embedded Map Section</h3>
+        <p>Google Maps location can be embedded here for AURAK / RAKCOC.</p>
+      </div>
+    </section>
+  </section>
+</main>
+
 <footer>
   <p>© 2026 RAKCOC - Ras Al Khaimah Center for Outdoor Comfort. All Rights Reserved.</p>
-  <div class="social">
-    <span>f</span><span>in</span><span>x</span><span>▶</span>
-  </div>
+  <div class="social"><span>f</span><span>in</span><span>x</span><span>▶</span></div>
 </footer>
-"""
 
-def page(title, body):
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{title}</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-{header}
-{body}
-{footer}
+<script>
+function showPage(pageId, btn) {{
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  document.querySelectorAll('.nav').forEach(n => n.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  window.scrollTo(0,0);
+}}
+function showPageByName(pageId) {{
+  const buttons = document.querySelectorAll('.nav');
+  let selected = null;
+  buttons.forEach(b => {{
+    if (b.textContent.toLowerCase().includes(pageId.replace('-', ' '))) selected = b;
+  }});
+  if (pageId === 'about') selected = buttons[1];
+  showPage(pageId, selected);
+}}
+</script>
+
 </body>
 </html>
 """
 
-index_body = """
-<section class="hero">
-  <div>
-    <h1>RAK Center for Outdoor Comfort</h1>
-    <p>Advancing sustainability, outdoor thermal comfort, urban heat mapping, and climate resilience in Ras Al Khaimah and the Middle East region.</p>
-    <a href="about.html" class="btn">Explore RAKCOC</a>
-  </div>
-</section>
+(out_dir / "RAKCOC_website_FIXED.html").write_text(html, encoding="utf-8")
 
-<section class="container">
-  <h2 class="section-title">Ras Al Khaimah Outdoor Comfort</h2>
-  <p style="text-align:center;max-width:900px;margin:0 auto 35px;">
-    RAKCOC supports practical applied research on outdoor comfort through modeling, testing, design advisory, education, guidelines, and long-term monitoring.
-  </p>
-  <div class="gallery">
-    <img src="dhayah-fort.jpg" alt="Dhayah Fort in Ras Al Khaimah">
-    <img src="oryx.jpg" alt="Oryx in Ras Al Khaimah">
-    <img src="raptor-show.jpg" alt="Raptor show in Ras Al Khaimah">
-    <img src="survey-poster.png" alt="Outdoor Comfort Survey">
-  </div>
-</section>
-"""
-
-about_body = """
-<section class="page-title">
-  <h1>About Us</h1>
-  <p>RAK Center for Outdoor Comfort</p>
-</section>
-
-<section class="container">
-  <div class="cards">
-    <div class="card">
-      <h3>About Us</h3>
-      <p>RAK Center for Outdoor Comfort (RAKCOC), a joint initiative between RAK Municipality and AURAK, focuses on practical applied research on outdoor comfort in the Middle East region. The Scientific program of this feasibility period primarily aims to support adopting outdoor thermal comfort solutions in Ras Al Khaimah and the region through modeling testing and implementing activities that provide various services, such as design advisory and guidelines, education, testing, etc.</p>
-      <p>In its development strategy, the Center plans to expand its scope to adjacent fields such as micro-climate management, climate change adaptation, outdoor landscape design, urban heat island reduction, Nature Based Solutions (NBS), and others as may be relevant.</p>
-    </div>
-    <div class="card">
-      <h3>Vision</h3>
-      <p>RAKCOC is the first center in the Middle East to focus on a better understanding of the richness of microclimatic characteristics in outdoor urban spaces and the comfort implications for the people using them.</p>
-      <p>By controlling sources of discomfort, sedentary activities, as well as the use of public transport, cycling, and walking, are promoted. The ultimate goal is to create thriving spaces that attract and accommodate a substantial number of people.</p>
-    </div>
-    <div class="card">
-      <h3>Mission</h3>
-      <p>RAKOC attempts to understand the thermal conditions outdoors. Models are currently unavailable for hot and humid countries, and solutions still need to be well-designed. There needs to be a greater understanding of the physical and human parameters in these spaces and the subjective responses of end users.</p>
-      <p>The center also relies on research based on feedback from facilities equipped with instruments and long-term monitoring.</p>
-    </div>
-    <div class="card">
-      <h3>Our Team</h3>
-      <p>The center’s establishment is a recent development, bringing together a dynamic interdisciplinary team comprising AURAK and RAK municipality members. The center is situated within the AURAK campus (Building K) and is a hub for collaboration and knowledge exchange.</p>
-      <p>The interdisciplinary team primarily focuses on harnessing their expertise in measurement and modeling. We have formed valuable partnerships with esteemed organizations such as RAK Academy, RAK Hospitality, RAK Properties, and Marjan Island, who contribute to our collective efforts.</p>
-      <p>In particular, the Engineering School of AURAK actively participates through the involvement of the Architecture Department and Mechanical Engineering Department. Their engagement ensures a comprehensive approach to address the center's objectives effectively.</p>
-    </div>
-  </div>
-</section>
-"""
-
-services = [
-"Urban Heat Mapping","Outdoor Thermal Comfort Studies","GIS and Spatial Analysis",
-"Environmental Monitoring","Design Advisory and Guidelines","Micro-Climate Management",
-"Climate Change Adaptation","Urban Heat Island Reduction","Education and Research"
-]
-services_body = """
-<section class="page-title"><h1>Services</h1><p>Research, testing, design guidance, and environmental analysis</p></section>
-<section class="container"><div class="cards">
-""" + "\n".join([f"<div class='card'><h3>{s}</h3><p>RAKCOC provides professional support related to {s.lower()} to improve outdoor comfort, sustainability, and climate-resilient urban development.</p></div>" for s in services]) + """
-</div></section>
-"""
-
-projects_body = """
-<section class="page-title"><h1>Projects</h1><p>Research and applied projects for Ras Al Khaimah</p></section>
-<section class="container">
-  <div class="cards">
-    <div class="project-card"><img src="survey-poster.png"><h3>Ras Al Khaimah Heat Map Strategy 2026</h3><p>A strategy to identify and analyze hot and cool areas across Ras Al Khaimah and support decision-making for sustainable and climate-resilient development.</p></div>
-    <div class="project-card"><img src="survey-poster.png"><h3>Outdoor Comfort Survey</h3><p>A survey to understand how comfortable outdoor spaces feel across Ras Al Khaimah, including heat, shade, humidity, walkability, and safety.</p></div>
-    <div class="project-card"><img src="dhayah-fort.jpg"><h3>Urban Environment Modeling</h3><p>GIS-based spatial modeling and scenario development to understand urban heat behavior and guide future planning.</p></div>
-    <div class="project-card"><img src="al-wadi.jpg"><h3>Air Quality Analysis</h3><p>Assessment of PM2.5, CO₂, temperature, and relative humidity to study the relationship between air quality and urban heat.</p></div>
-    <div class="project-card"><img src="oryx.jpg"><h3>Population Mapping</h3><p>Mapping population distribution to understand heat exposure, vulnerability, and high-risk residential areas.</p></div>
-    <div class="project-card"><img src="raptor-show.jpg"><h3>Sustainable Urban Development</h3><p>Supporting comfortable, livable, and climate-resilient outdoor spaces in Ras Al Khaimah.</p></div>
-  </div>
-</section>
-"""
-
-books_body = """
-<section class="page-title"><h1>Books and Resources</h1><p>Reports, guidelines, research documents, and publications</p></section>
-<section class="container">
-  <div class="resource-grid">
-    <div class="resource-card">
-      <div class="resource-icon">📘</div>
-      <h3>Ras Al Khaimah Heat Map Strategy 2026</h3>
-      <p>A report about urban heat mapping, outdoor comfort, air quality, and climate-resilient development.</p>
-      <a class="btn" href="rak-heat-map-strategy-2026.docx" download>Download Report</a>
-    </div>
-    <div class="resource-card">
-      <div class="resource-icon">📗</div>
-      <h3>Outdoor Comfort Guidelines</h3>
-      <p>Future guidelines for shade, greenery, walkability, seating, materials, and outdoor comfort improvement.</p>
-    </div>
-    <div class="resource-card">
-      <div class="resource-icon">📙</div>
-      <h3>Research and Student Work</h3>
-      <p>Student studies, field measurements, survey results, and applied research documents can be added here.</p>
-    </div>
-  </div>
-</section>
-"""
-
-contact_body = """
-<section class="page-title"><h1>Contact Us</h1><p>RAK Center for Outdoor Comfort</p></section>
-<section class="container">
-  <div class="contact-card">
-    <h2 style="color:#8b0025;margin-bottom:15px;">For More Information</h2>
-    <p><strong>Ms. Ivy Tanedo</strong></p>
-    <p>Office Coordinator</p>
-    <p>RAK Center for Outdoor Comfort</p>
-    <p>American University of Ras Al Khaimah</p>
-    <p><strong>Tel:</strong> +971-7-246-8804</p>
-    <p><strong>Email:</strong> ivy.tanedo@aurak.ac.ae</p>
-    <p><strong>Web:</strong> www.aurak.ac.ae</p>
-  </div>
-
-  <div class="contact-card" style="margin-top:25px;">
-    <h2 style="color:#8b0025;">Contact Form</h2>
-    <form class="form">
-      <input type="text" placeholder="Your Name">
-      <input type="email" placeholder="Your Email">
-      <input type="text" placeholder="Subject">
-      <textarea rows="6" placeholder="Your Message"></textarea>
-      <button class="btn" type="submit">Send Message</button>
-    </form>
-  </div>
-
-  <div class="map">
-    <h3>Embedded Map Section</h3>
-    <p>Google Maps location can be embedded here for AURAK / RAKCOC.</p>
-  </div>
-</section>
-"""
-
-files = {
-    "style.css": style_css,
-    "index.html": page("RAKCOC | Home", index_body),
-    "about.html": page("RAKCOC | About Us", about_body),
-    "services.html": page("RAKCOC | Services", services_body),
-    "projects.html": page("RAKCOC | Projects", projects_body),
-    "books.html": page("RAKCOC | Books and Resources", books_body),
-    "contact.html": page("RAKCOC | Contact Us", contact_body),
-}
-
-for fname, content in files.items():
-    (site / fname).write_text(content, encoding="utf-8")
-
-zip_path = base / "RAKCOC_Website.zip"
+zip_path = base / "RAKCOC_FIXED_SINGLE_FILE.zip"
 if zip_path.exists():
     zip_path.unlink()
 with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
-    for file in site.rglob("*"):
-        z.write(file, file.relative_to(site.parent))
+    for file in out_dir.iterdir():
+        z.write(file, file.name)
 
 zip_path
