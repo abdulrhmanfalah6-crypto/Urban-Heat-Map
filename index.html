@@ -1,114 +1,315 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAKCOC - Final Report & Map Platform</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body, html { height: 100%; font-family: sans-serif; overflow: hidden; display: flex; flex-direction: column; }
-        
-        /* Navigation Header */
-        .navbar { height: 60px; background-color: #1a252f; color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 25px; z-index: 2000; }
-        .navbar-logo { display: flex; align-items: center; gap: 10px; font-size: 1.25rem; font-weight: bold; }
-        .navbar-logo i { color: #3498db; font-size: 1.5rem; }
-        .navbar-links { display: flex; gap: 25px; list-style: none; }
-        .navbar-links a { color: #ecf0f1; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
-        .navbar-links a:hover { color: #3498db; }
-        
-        /* Main Workspace Splitting */
-        .split-container { display: flex; width: 100%; height: calc(100vh - 60px); }
-        .book-panel { width: 40%; height: 100%; display: flex; flex-direction: column; background-color: #fcfaf2; border-right: 1px solid #dcd7ca; }
-        .book-header { padding: 20px; background-color: #f4f0e3; border-bottom: 1px solid #dcd7ca; }
-        .chapter-select { width: 100%; padding: 10px; font-size: 1rem; border-radius: 5px; border: 1px solid #bcae97; }
-        
-        /* Book Content Display */
-        .book-content { padding: 30px; overflow-y: auto; flex-grow: 1; line-height: 1.7; font-family: 'Georgia', serif; font-size: 1.15rem; }
-        .chapter-text { display: none; }
-        .chapter-text.active { display: block; }
-        h2 { margin-bottom: 15px; color: #4a3b2c; border-bottom: 2px solid #bcae97; padding-bottom: 5px; }
-        p { margin-bottom: 15px; text-align: justify; }
-        .map-panel { width: 60%; height: 100%; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAKCOC - Ras Al Khaimah Center for Outdoor Comfort</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f5f7f8;
+      color: #222;
+      line-height: 1.6;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 50px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: bold;
+      color: #0f5c5c;
+    }
+
+    .logo img {
+      width: 55px;
+      height: 55px;
+      object-fit: contain;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+      align-items: center;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #222;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: #0f8b8d;
+    }
+
+    .hero {
+      height: 100vh;
+      background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        url('ras-al-khaimah-photo.jpg') center/cover no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      padding: 20px;
+    }
+
+    .hero-content h1 {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .hero-content p {
+      font-size: 20px;
+      max-width: 750px;
+      margin: auto;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 25px;
+      padding: 12px 30px;
+      background: #0f8b8d;
+      color: white;
+      text-decoration: none;
+      border-radius: 30px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #0b6b6d;
+    }
+
+    section {
+      padding: 80px 50px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 34px;
+      margin-bottom: 40px;
+      color: #0f5c5c;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      color: #0f8b8d;
+      margin-bottom: 12px;
+    }
+
+    .project-box {
+      background: white;
+      border-left: 6px solid #0f8b8d;
+      padding: 25px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+    }
+
+    .books {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .book {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .book-icon {
+      font-size: 45px;
+      margin-bottom: 15px;
+    }
+
+    footer {
+      background: #0f5c5c;
+      color: white;
+      text-align: center;
+      padding: 25px;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        padding: 15px;
+      }
+
+      nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 10px;
+      }
+
+      .hero-content h1 {
+        font-size: 32px;
+      }
+
+      section {
+        padding: 60px 20px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- NAV BAR (Updated with your folder acronym RAKCOC) -->
-    <nav class="navbar">
-        <div class="navbar-logo">
-            <i class="fa-solid fa-chart-line"></i>
-            <span>RAKCOC PLATFORM</span>
-        </div>
-        <ul class="navbar-links">
-            <li><a href="#info" onclick="alert('RAKCOC Final Report Dashboard System')"><i class="fa-solid fa-circle-info"></i> Information</a></li>
-            <li><a href="#team" onclick="alert('Project Team Member Workspace')"><i class="fa-solid fa-users"></i> The Team</a></li>
-        </ul>
-    </nav>
-
-    <!-- SPLIT WORKSPACE -->
-    <div class="split-container">
-        <div class="book-panel">
-            <div class="book-header">
-                <select id="chapterDropdown" class="chapter-select" onchange="switchChapter()">
-                    <option value="section1">Section 1: Executive Summary</option>
-                    <option value="section2">Section 2: Temperature Map Analysis</option>
-                </select>
-            </div>
-            
-            <div class="book-content">
-                <!-- SECTION 1 CONTENT -->
-                <div id="section1" class="chapter-text active">
-                    <h2>Executive Summary</h2>
-                    
-                    <!-- ========================================== -->
-                    <!--   PASTE YOUR FINAL REPORT TEXT 1 BELOW     -->
-                    <!-- ========================================== -->
-                    <p>
-                        Delete this placeholder text and paste the first part of your report text from your desktop file here. To make a new paragraph, simply wrap your text using the opening and closing p tags.
-                    </p>
-                    <!-- ========================================== -->
-                    
-                </div>
-
-                <!-- SECTION 2 CONTENT -->
-                <div id="section2" class="chapter-text">
-                    <h2>Temperature Map Analysis</h2>
-                    
-                    <!-- ========================================== -->
-                    <!--   PASTE YOUR FINAL REPORT TEXT 2 BELOW     -->
-                    <!-- ========================================== -->
-                    <p>
-                        Delete this placeholder text and paste the second part of your report text here. When readers select this option from the dropdown menu, the map window will instantly pan across the globe automatically.
-                    </p>
-                    <!-- ========================================== -->
-                    
-                </div>
-            </div>
-        </div>
-        <div id="map" class="map-panel"></div>
+  <header>
+    <div class="logo">
+      <img src="rakcoc-logo.png" alt="RAKCOC Logo" />
+      <span>RAKCOC</span>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        // Start the map tracking view
-        const map = L.map('map').setView([25.80, 55.95], 10); // Coordinates initialized near Ras Al Khaimah region
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
+    <nav>
+      <ul>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#books">Books</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+      </ul>
+    </nav>
+  </header>
 
-        function switchChapter() {
-            const dropdown = document.getElementById("chapterDropdown");
-            const selectedValue = dropdown.value;
-            const chapters = document.querySelectorAll('.chapter-text');
-            chapters.forEach(chap => chap.classList.remove('active'));
-            document.getElementById(selectedValue).classList.add('active');
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Ras Al Khaimah Center for Outdoor Comfort</h1>
+      <p>Improving outdoor comfort, urban climate, and sustainable environments in Ras Al Khaimah through research, innovation, and community-focused projects.</p>
+      <a href="#about" class="btn">Explore More</a>
+    </div>
+  </section>
 
-            if (selectedValue === "section1") {
-                map.flyTo([25.80, 55.95], 10); // Centers map on region 1
-            } else if (selectedValue === "section2") {
-                map.flyTo([25.80, 55.95], 13); // Zooms in closer for map analysis
-            }
-        }
-    </script>
+  <section id="about">
+    <h2 class="section-title">About Us</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Vision</h3>
+        <p>To make Ras Al Khaimah a leading city in outdoor comfort, environmental quality, and sustainable urban development.</p>
+      </div>
+      <div class="card">
+        <h3>Mission</h3>
+        <p>To study outdoor environmental conditions and provide solutions that improve comfort, reduce heat stress, and support better public spaces.</p>
+      </div>
+      <div class="card">
+        <h3>Our Team</h3>
+        <p>Our team includes researchers, engineers, planners, and students working together to develop practical solutions for urban comfort.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="services">
+    <h2 class="section-title">Services</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Urban Heat Mapping</h3>
+        <p>Creating and analyzing heat maps to understand temperature patterns in Ras Al Khaimah.</p>
+      </div>
+      <div class="card">
+        <h3>Outdoor Comfort Studies</h3>
+        <p>Studying outdoor spaces to improve thermal comfort for residents and visitors.</p>
+      </div>
+      <div class="card">
+        <h3>GIS and Data Analysis</h3>
+        <p>Using GIS tools and environmental data to support planning and decision-making.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <h2 class="section-title">Projects</h2>
+    <div class="project-box">
+      <h3>Urban Heat Map of Ras Al Khaimah</h3>
+      <p>This project focuses on mapping temperature patterns in Ras Al Khaimah and identifying areas affected by urban heat.</p>
+    </div>
+    <div class="project-box">
+      <h3>Outdoor Comfort Improvement</h3>
+      <p>This project studies outdoor public areas and suggests solutions such as shading, greenery, and better surface materials.</p>
+    </div>
+    <div class="project-box">
+      <h3>Future Project</h3>
+      <p>Add your next project details here, including objectives, study area, methods, and results.</p>
+    </div>
+  </section>
+
+  <section id="books">
+    <h2 class="section-title">Books and Resources</h2>
+    <div class="books">
+      <div class="book">
+        <div class="book-icon">📘</div>
+        <h3>Research Reports</h3>
+        <p>Reports related to outdoor comfort and urban climate.</p>
+      </div>
+      <div class="book">
+        <div class="book-icon">📗</div>
+        <h3>Guidelines</h3>
+        <p>Simple guidelines for improving outdoor spaces.</p>
+      </div>
+      <div class="book">
+        <div class="book-icon">📙</div>
+        <h3>Student Work</h3>
+        <p>Projects and studies completed by students and researchers.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2 class="section-title">Contact Us</h2>
+    <div class="card">
+      <h3>Get in Touch</h3>
+      <p><strong>Email:</strong> info@rakcoc.ae</p>
+      <p><strong>Location:</strong> Ras Al Khaimah, United Arab Emirates</p>
+      <p><strong>Phone:</strong> +971 XX XXX XXXX</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 RAKCOC - Ras Al Khaimah Center for Outdoor Comfort. All Rights Reserved.</p>
+  </footer>
+
 </body>
 </html>
