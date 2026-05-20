@@ -1,315 +1,282 @@
+# Multi-Page Website Structure for RAKCOC
+
+## 1. index.html (Home Page)
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RAKCOC - Ras Al Khaimah Center for Outdoor Comfort</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAKCOC Home</title>
+
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, sans-serif;
     }
 
-    body {
-      background-color: #f5f7f8;
-      color: #222;
-      line-height: 1.6;
+    body{
+      background:#f5f7f8;
     }
 
-    header {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 1000;
-      background: rgba(255, 255, 255, 0.95);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 50px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    header{
+      position:fixed;
+      width:100%;
+      top:0;
+      background:white;
+      padding:15px 50px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+      z-index:1000;
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: bold;
-      color: #0f5c5c;
+    .logo{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:bold;
+      color:#0f5c5c;
     }
 
-    .logo img {
-      width: 55px;
-      height: 55px;
-      object-fit: contain;
+    .logo img{
+      width:55px;
     }
 
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 25px;
-      align-items: center;
+    nav ul{
+      list-style:none;
+      display:flex;
+      gap:25px;
     }
 
-    nav a {
-      text-decoration: none;
-      color: #222;
-      font-weight: 600;
-      transition: 0.3s;
+    nav a{
+      text-decoration:none;
+      color:#222;
+      font-weight:600;
+      transition:0.3s;
     }
 
-    nav a:hover {
-      color: #0f8b8d;
+    nav a:hover{
+      color:#0f8b8d;
     }
 
-    .hero {
-      height: 100vh;
-      background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
-        url('ras-al-khaimah-photo.jpg') center/cover no-repeat;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      color: white;
-      padding: 20px;
+    .hero{
+      height:100vh;
+      background:linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('ras-al-khaimah-photo.jpg') center/cover no-repeat;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      color:white;
+      padding:20px;
     }
 
-    .hero-content h1 {
-      font-size: 48px;
-      margin-bottom: 15px;
+    .hero h1{
+      font-size:55px;
+      margin-bottom:20px;
     }
 
-    .hero-content p {
-      font-size: 20px;
-      max-width: 750px;
-      margin: auto;
+    .hero p{
+      font-size:22px;
+      max-width:800px;
+      margin:auto;
     }
 
-    .btn {
-      display: inline-block;
-      margin-top: 25px;
-      padding: 12px 30px;
-      background: #0f8b8d;
-      color: white;
-      text-decoration: none;
-      border-radius: 30px;
-      font-weight: bold;
-      transition: 0.3s;
+    .btn{
+      display:inline-block;
+      margin-top:25px;
+      padding:14px 35px;
+      background:#0f8b8d;
+      color:white;
+      border-radius:30px;
+      text-decoration:none;
+      font-weight:bold;
     }
 
-    .btn:hover {
-      background: #0b6b6d;
-    }
-
-    section {
-      padding: 80px 50px;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    .section-title {
-      text-align: center;
-      font-size: 34px;
-      margin-bottom: 40px;
-      color: #0f5c5c;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 25px;
-    }
-
-    .card {
-      background: white;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-      transition: 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-    }
-
-    .card h3 {
-      color: #0f8b8d;
-      margin-bottom: 12px;
-    }
-
-    .project-box {
-      background: white;
-      border-left: 6px solid #0f8b8d;
-      padding: 25px;
-      margin-bottom: 20px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.06);
-    }
-
-    .books {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-    }
-
-    .book {
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    }
-
-    .book-icon {
-      font-size: 45px;
-      margin-bottom: 15px;
-    }
-
-    footer {
-      background: #0f5c5c;
-      color: white;
-      text-align: center;
-      padding: 25px;
-      margin-top: 40px;
-    }
-
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        padding: 15px;
-      }
-
-      nav ul {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 10px;
-      }
-
-      .hero-content h1 {
-        font-size: 32px;
-      }
-
-      section {
-        padding: 60px 20px;
-      }
+    footer{
+      background:#0f5c5c;
+      color:white;
+      text-align:center;
+      padding:20px;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo">
-      <img src="rakcoc-logo.png" alt="RAKCOC Logo" />
-      <span>RAKCOC</span>
-    </div>
+<header>
+  <div class="logo">
+    <img src="rakcoc-logo.png" alt="Logo">
+    <span>RAKCOC</span>
+  </div>
 
-    <nav>
-      <ul>
-        <li><a href="#about">About Us</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#books">Books</a></li>
-        <li><a href="#contact">Contact Us</a></li>
-      </ul>
-    </nav>
-  </header>
+  <nav>
+    <ul>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="books.html">Books</a></li>
+      <li><a href="contact.html">Contact Us</a></li>
+    </ul>
+  </nav>
+</header>
 
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Ras Al Khaimah Center for Outdoor Comfort</h1>
-      <p>Improving outdoor comfort, urban climate, and sustainable environments in Ras Al Khaimah through research, innovation, and community-focused projects.</p>
-      <a href="#about" class="btn">Explore More</a>
-    </div>
-  </section>
+<section class="hero">
+  <div>
+    <h1>Ras Al Khaimah Center for Outdoor Comfort</h1>
+    <p>Research, innovation, sustainability, and outdoor comfort solutions in Ras Al Khaimah.</p>
+    <a href="about.html" class="btn">Learn More</a>
+  </div>
+</section>
 
-  <section id="about">
-    <h2 class="section-title">About Us</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>Vision</h3>
-        <p>To make Ras Al Khaimah a leading city in outdoor comfort, environmental quality, and sustainable urban development.</p>
-      </div>
-      <div class="card">
-        <h3>Mission</h3>
-        <p>To study outdoor environmental conditions and provide solutions that improve comfort, reduce heat stress, and support better public spaces.</p>
-      </div>
-      <div class="card">
-        <h3>Our Team</h3>
-        <p>Our team includes researchers, engineers, planners, and students working together to develop practical solutions for urban comfort.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="services">
-    <h2 class="section-title">Services</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>Urban Heat Mapping</h3>
-        <p>Creating and analyzing heat maps to understand temperature patterns in Ras Al Khaimah.</p>
-      </div>
-      <div class="card">
-        <h3>Outdoor Comfort Studies</h3>
-        <p>Studying outdoor spaces to improve thermal comfort for residents and visitors.</p>
-      </div>
-      <div class="card">
-        <h3>GIS and Data Analysis</h3>
-        <p>Using GIS tools and environmental data to support planning and decision-making.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="projects">
-    <h2 class="section-title">Projects</h2>
-    <div class="project-box">
-      <h3>Urban Heat Map of Ras Al Khaimah</h3>
-      <p>This project focuses on mapping temperature patterns in Ras Al Khaimah and identifying areas affected by urban heat.</p>
-    </div>
-    <div class="project-box">
-      <h3>Outdoor Comfort Improvement</h3>
-      <p>This project studies outdoor public areas and suggests solutions such as shading, greenery, and better surface materials.</p>
-    </div>
-    <div class="project-box">
-      <h3>Future Project</h3>
-      <p>Add your next project details here, including objectives, study area, methods, and results.</p>
-    </div>
-  </section>
-
-  <section id="books">
-    <h2 class="section-title">Books and Resources</h2>
-    <div class="books">
-      <div class="book">
-        <div class="book-icon">📘</div>
-        <h3>Research Reports</h3>
-        <p>Reports related to outdoor comfort and urban climate.</p>
-      </div>
-      <div class="book">
-        <div class="book-icon">📗</div>
-        <h3>Guidelines</h3>
-        <p>Simple guidelines for improving outdoor spaces.</p>
-      </div>
-      <div class="book">
-        <div class="book-icon">📙</div>
-        <h3>Student Work</h3>
-        <p>Projects and studies completed by students and researchers.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="contact">
-    <h2 class="section-title">Contact Us</h2>
-    <div class="card">
-      <h3>Get in Touch</h3>
-      <p><strong>Email:</strong> info@rakcoc.ae</p>
-      <p><strong>Location:</strong> Ras Al Khaimah, United Arab Emirates</p>
-      <p><strong>Phone:</strong> +971 XX XXX XXXX</p>
-    </div>
-  </section>
-
-  <footer>
-    <p>&copy; 2026 RAKCOC - Ras Al Khaimah Center for Outdoor Comfort. All Rights Reserved.</p>
-  </footer>
+<footer>
+  <p>© 2026 RAKCOC - All Rights Reserved</p>
+</footer>
 
 </body>
 </html>
+```
+
+---
+
+## 2. about.html
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>About Us</title>
+</head>
+<body>
+<h1>About Us</h1>
+
+<h2>Vision</h2>
+<p>To make Ras Al Khaimah a leader in outdoor comfort and sustainable urban development.</p>
+
+<h2>Mission</h2>
+<p>To improve outdoor spaces through research and environmental studies.</p>
+
+<h2>Our Team</h2>
+<p>Researchers, engineers, planners, and students working together.</p>
+
+<a href="index.html">Back to Home</a>
+</body>
+</html>
+```
+
+---
+
+## 3. services.html
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Services</title>
+</head>
+<body>
+<h1>Services</h1>
+
+<ul>
+<li>Urban Heat Mapping</li>
+<li>Outdoor Comfort Studies</li>
+<li>GIS and Data Analysis</li>
+<li>Environmental Research</li>
+</ul>
+
+<a href="index.html">Back to Home</a>
+</body>
+</html>
+```
+
+---
+
+## 4. projects.html
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Projects</title>
+</head>
+<body>
+<h1>Projects</h1>
+
+<h2>Urban Heat Map of Ras Al Khaimah</h2>
+<p>Studying urban temperature and heat island effects.</p>
+
+<h2>Outdoor Comfort Project</h2>
+<p>Improving public spaces using shading and greenery.</p>
+
+<a href="index.html">Back to Home</a>
+</body>
+</html>
+```
+
+---
+
+## 5. books.html
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Books and Resources</title>
+</head>
+<body>
+<h1>Books and Resources</h1>
+
+<ul>
+<li>Research Reports</li>
+<li>Environmental Guidelines</li>
+<li>Student Projects</li>
+<li>Scientific Publications</li>
+</ul>
+
+<a href="index.html">Back to Home</a>
+</body>
+</html>
+```
+
+---
+
+## 6. contact.html
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Contact Us</title>
+</head>
+<body>
+<h1>Contact Us</h1>
+
+<p>Email: info@rakcoc.ae</p>
+<p>Location: Ras Al Khaimah, UAE</p>
+<p>Phone: +971 XX XXX XXXX</p>
+
+<a href="index.html">Back to Home</a>
+</body>
+</html>
+```
+
+---
+
+## Website Files Needed
+
+1. index.html
+2. about.html
+3. services.html
+4. projects.html
+5. books.html
+6. contact.html
+7. rakcoc-logo.png
+8. ras-al-khaimah-photo.jpg
