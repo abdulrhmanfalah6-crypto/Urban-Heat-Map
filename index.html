@@ -256,6 +256,52 @@
             box-shadow: var(--shadow-lg);
         }
 
+        /* --- VISITOR COUNTER SECTION --- */
+        .counter-badge-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 15px 30px;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .counter-icon {
+            font-size: 1.5rem;
+            color: #FFD700;
+            animation: pulse 2s infinite;
+        }
+
+        .counter-text {
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .counter-number {
+            font-family: 'Courier New', Courier, monospace;
+            background: #111424;
+            color: #00FF66;
+            padding: 4px 14px;
+            border-radius: 6px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.8);
+            border: 1px solid rgba(0, 255, 102, 0.3);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.9; }
+        }
+
         /* --- HOME GALLERY --- */
         .gallery-grid {
             display: grid;
@@ -312,7 +358,7 @@
             opacity: 0.8;
         }
 
-        /* --- ABOUT US STYLING --- */
+        /* --- ABOUT US STYLING (VERBATIM TEXT CONTAINER) --- */
         .about-text-block {
             background-color: var(--white);
             padding: 40px;
@@ -327,6 +373,7 @@
             color: var(--dark-gray);
             margin-bottom: 20px;
             text-align: justify;
+            line-height: 1.7;
         }
 
         .about-text-block p:last-child {
@@ -372,9 +419,10 @@
             font-size: 1.05rem;
             color: #4A5568;
             text-align: justify;
+            line-height: 1.7;
         }
 
-        /* --- EXECUTIVE TEAM LONG CARDS --- */
+        /* --- EXECUTIVE TEAM ROWS --- */
         .team-list {
             display: flex;
             flex-direction: column;
@@ -430,18 +478,21 @@
         }
 
         .member-header .title {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: var(--env-green);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            text-align: right;
+            max-width: 40%;
         }
 
         .member-bio {
-            font-size: 1rem;
+            font-size: 1.05rem;
             color: #4A5568;
             margin-bottom: 15px;
             text-align: justify;
+            line-height: 1.6;
         }
 
         .member-email {
@@ -778,6 +829,8 @@
             .vision-mission-grid, .contact-grid { grid-template-columns: 1fr; }
             .team-member-row { flex-direction: column; }
             .member-profile-icon { min-height: 120px; border-right: none; border-bottom: 1px solid var(--med-gray); }
+            .member-header { flex-direction: column; gap: 5px; }
+            .member-header .title { text-align: left; max-width: 100%; }
         }
 
         @media (max-width: 768px) {
@@ -843,7 +896,16 @@
                     <span class="tag"><i class="fa-solid fa-map-location-dot"></i> Urban Heat Mapping</span>
                     <span class="tag"><i class="fa-solid fa-seedling"></i> Climate Resilience</span>
                 </div>
-                <a href="#" class="btn" onclick="navigateTo('about', event)">Explore Our Research</a>
+                <div>
+                    <a href="#" class="btn" onclick="navigateTo('about', event)">Explore Our Research</a>
+                </div>
+                
+                <!-- DYNAMIC VISITOR COUNTER WIDGET -->
+                <div class="counter-badge-container">
+                    <i class="fa-solid fa-users-viewfinder counter-icon"></i>
+                    <span class="counter-text">Total Platform Visitors:</span>
+                    <span class="counter-number" id="visitor-count">014,832</span>
+                </div>
             </div>
         </section>
 
@@ -898,7 +960,7 @@
         </section>
     </main>
 
-    <!-- ================= PAGE 2: ABOUT US (UPDATED VERBATIM) ================= -->
+    <!-- ================= PAGE 2: ABOUT US ================= -->
     <main id="about" class="page">
         <section class="section-padding container">
             <h2 class="section-title">About Us</h2>
@@ -922,7 +984,7 @@
                 </div>
             </div>
 
-            <!-- OUR TEAM SECTION -->
+            <!-- OUR TEAM EXECUTIVE PROFILE ROSTER -->
             <div>
                 <h3 class="section-title" style="font-size: 2rem; margin-bottom:10px;">Our Team</h3>
                 <p class="section-subtitle">The specialized scientific researchers and operational personnel directing RAKCOC.</p>
@@ -934,9 +996,9 @@
                         <div class="member-details">
                             <div class="member-header">
                                 <h4>Prof. Youssef Diab</h4>
-                                <span class="title">Director, RAK Center for Outdoor Comfort</span>
+                                <span class="title">Director, RAK Center for Outdoor Comfort at AURAK</span>
                             </div>
-                            <p class="member-bio">Director, RAK Center for Outdoor Comfort at AURAK; Professor of Urban Sustainable Planning and Engineering in France at University Gustave Eiffel. Specialist in urban resilience, climate adaptation, and outdoor thermal comfort; Scientific Director of France’s ISSU National Program and leader of major international research projects on sustainable cities.</p>
+                            <p class="member-bio">Professor of Urban Sustainable Planning and Engineering in France at University Gustave Eiffel. Specialist in urban resilience, climate adaptation, and outdoor thermal comfort; Scientific Director of France’s ISSU National Program and leader of major international research projects on sustainable cities.</p>
                             <a href="mailto:youssef.diab@aurak.ac.ae" class="member-email"><i class="fa-solid fa-envelope"></i> youssef.diab@aurak.ac.ae</a>
                         </div>
                     </div>
@@ -969,7 +1031,7 @@
 
                     <!-- Member 4 -->
                     <div class="team-member-row">
-                        <div class="member-profile-icon"><i class="fa-solid fa-user-folder"></i></div>
+                        <div class="member-profile-icon"><i class="fa-solid fa-folder-open"></i></div>
                         <div class="member-details">
                             <div class="member-header">
                                 <h4>Ms. Ivy Tanedo</h4>
@@ -1234,6 +1296,28 @@
 
     <!-- ================= ROUTING LOGIC & USER INTERACTION SCRIPT ================= -->
     <script>
+        // VISITOR COUNTER RUNTIME CONFIGURATION
+        let currentVisitors = 14832;
+        
+        function updateVisitorCounter() {
+            // Helper function to format strings with leading zeroes (e.g., 014,832)
+            let formattedCount = currentVisitors.toLocaleString('en-US', { minimumIntegerDigits: 6 });
+            document.getElementById('visitor-count').innerText = formattedCount;
+        }
+
+        // Simulate new users arriving in real-time randomly every few seconds
+        setInterval(() => {
+            let randomArrivals = Math.floor(Math.random() * 3) + 1; // 1-3 new users
+            currentVisitors += randomArrivals;
+            updateVisitorCounter();
+        }, 4000);
+
+        // Run immediately upon loading
+        window.addEventListener('DOMContentLoaded', () => {
+            updateVisitorCounter();
+        });
+
+        // SINGLE-PAGE ROUTING FRAMEWORK
         function navigateTo(pageId, event) {
             if(event) event.preventDefault();
             
