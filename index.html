@@ -3,29 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Book and Map Site</title>
+    <title>Company Platform - Book & Map Tracker</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f9;
-            padding: 50px;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
-            display: inline-block;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body, html { height: 100%; font-family: sans-serif; overflow: hidden; display: flex; flex-direction: column; }
+        .navbar { height: 60px; background-color: #1a252f; color: white; display: flex; justify-content: space-between; align-items: center; padding: 0 25px; z-index: 2000; }
+        .navbar-logo { display: flex; align-items: center; gap: 10px; font-size: 1.25rem; font-weight: bold; }
+        .navbar-logo i { color: #3498db; font-size: 1.5rem; }
+        .navbar-links { display: flex; gap: 25px; list-style: none; }
+        .navbar-links a { color: #ecf0f1; text-decoration: none; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+        .navbar-links a:hover { color: #3498db; }
+        .split-container { display: flex; width: 100%; height: calc(100vh - 60px); }
+        .book-panel { width: 40%; height: 100%; display: flex; flex-direction: column; background-color: #fcfaf2; border-right: 1px solid #dcd7ca; }
+        .book-header { padding: 20px; background-color: #f4f0e3; border-bottom: 1px solid #dcd7ca; }
+        .chapter-select { width: 100%; padding: 10px; font-size: 1rem; border-radius: 5px; border: 1px solid #bcae97; }
+        .book-content { padding: 30px; overflow-y: auto; flex-grow: 1; line-height: 1.7; font-family: 'Georgia', serif; font-size: 1.15rem; }
+        .chapter-text { display: none; }
+        .chapter-text.active { display: block; }
+        h2 { margin-bottom: 15px; color: #4a3b2c; }
+        .map-panel { width: 60%; height: 100%; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>My Future Book & Map Website</h1>
-        <p>This website is officially live! Next, we will add the book reader and the temperature map here.</p>
+    <!-- TOP NAVBAR WITH LOGO AND ICONS -->
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <i class="fa-solid fa-earth-americas"></i>
+            <span>MY COMPANY LOGO</span>
+        </div>
+        <ul class="navbar-links">
+            <li><a href="#info" onclick="alert('Company Information Placeholder')"><i class="fa-solid fa-circle-info"></i> Information</a></li>
+            <li><a href="#team" onclick="alert('Our Team Placeholder')"><i class="fa-solid fa-users"></i> The Team</a></li>
+        </ul>
+    </nav>
+
+    <!-- SPLIT SCREEN -->
+    <div class="split-container">
+        <div class="book-panel">
+            <div class="book-header">
+                <select id="chapterDropdown" class="chapter-select" onchange="switchChapter()">
+                    <option value="chap1">Chapter 1: Introduction</option>
+                    <option value="chap2">Chapter 2: Map Focus</option>
+                </select>
+            </div>
+            <div class="book-content">
+                <div id="chap1" class="chapter-text active">
+                    <h2>Chapter 1: Introduction</h2>
+                    <p>This is where your book text goes. Your new header is at the top with your logo and team icons.</p>
+                </div>
+                <div id="chap2" class="chapter-text">
+                    <h2>Chapter 2: Map Focus</h2>
+                    <p>When you select this, the map shifts locations automatically!</p>
+                </div>
+            </div>
+        </div>
+        <div id="map" class="map-panel"></div>
     </div>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([20, 0], 2);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
+
+        function switchChapter() {
+            const dropdown = document.getElementById("chapterDropdown");
+            const selectedValue = dropdown.value;
+            const chapters = document.querySelectorAll('.chapter-text');
+            chapters.forEach(chap => chap.classList.remove('active'));
+            document.getElementById(selectedValue).classList.add('active');
+
+            if (selectedValue === "chap1") {
+                map.flyTo([20, 0], 2);
+            } else if (selectedValue === "chap2") {
+                map.flyTo([40, -100], 4);
+            }
+        }
+    </script>
 </body>
 </html>
