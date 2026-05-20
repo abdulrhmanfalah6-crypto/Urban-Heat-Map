@@ -312,17 +312,32 @@
             opacity: 0.8;
         }
 
-        /* --- ABOUT US ARCHITECTURE --- */
-        .about-layout {
-            display: flex;
-            flex-direction: column;
-            gap: 60px;
+        /* --- ABOUT US STYLING --- */
+        .about-text-block {
+            background-color: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+            border-left: 5px solid var(--primary-dark-red);
+        }
+
+        .about-text-block p {
+            font-size: 1.1rem;
+            color: var(--dark-gray);
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+
+        .about-text-block p:last-child {
+            margin-bottom: 0;
         }
 
         .vision-mission-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
+            margin-bottom: 60px;
         }
 
         .vm-card {
@@ -350,54 +365,102 @@
         .vm-card h3 {
             font-size: 1.6rem;
             margin-bottom: 15px;
+            color: var(--dark-gray);
         }
 
-        .team-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        .vm-card p {
+            font-size: 1.05rem;
+            color: #4A5568;
+            text-align: justify;
+        }
+
+        /* --- EXECUTIVE TEAM LONG CARDS --- */
+        .team-list {
+            display: flex;
+            flex-direction: column;
             gap: 30px;
-            margin-top: 30px;
+            margin-top: 40px;
         }
 
-        .team-card {
+        .team-member-row {
+            display: flex;
             background-color: var(--white);
             border-radius: 12px;
             overflow: hidden;
             box-shadow: var(--shadow);
-            text-align: center;
-            padding: 30px 20px;
             transition: var(--transition);
             border: 1px solid var(--med-gray);
         }
 
-        .team-card:hover {
-            transform: translateY(-5px);
+        .team-member-row:hover {
+            transform: translateY(-3px);
             box-shadow: var(--shadow-lg);
+            border-color: var(--primary-dark-red);
         }
 
-        .team-avatar {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
+        .member-profile-icon {
             background-color: var(--light-gray);
-            margin: 0 auto 20px;
+            min-width: 150px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
+            font-size: 3.5rem;
             color: var(--primary-dark-red);
-            border: 3px solid var(--med-gray);
+            border-right: 1px solid var(--med-gray);
         }
 
-        .team-card h4 {
-            font-size: 1.2rem;
-            margin-bottom: 6px;
+        .member-details {
+            padding: 30px;
+            flex-grow: 1;
         }
 
-        .team-card p {
-            font-size: 0.9rem;
+        .member-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--med-gray);
+            padding-bottom: 10px;
+        }
+
+        .member-header h4 {
+            font-size: 1.4rem;
+            color: var(--primary-dark-red);
+            font-weight: 700;
+        }
+
+        .member-header .title {
+            font-size: 1rem;
             color: var(--env-green);
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .member-bio {
+            font-size: 1rem;
+            color: #4A5568;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .member-email {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--dark-gray);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            background-color: var(--light-gray);
+            padding: 6px 14px;
+            border-radius: 20px;
+            transition: var(--transition);
+        }
+
+        .member-email:hover {
+            color: var(--white);
+            background-color: var(--primary-bright-red);
         }
 
         /* --- SERVICES SYSTEM --- */
@@ -713,6 +776,8 @@
         @media (max-width: 992px) {
             .hero h2 { font-size: 2.8rem; }
             .vision-mission-grid, .contact-grid { grid-template-columns: 1fr; }
+            .team-member-row { flex-direction: column; }
+            .member-profile-icon { min-height: 120px; border-right: none; border-bottom: 1px solid var(--med-gray); }
         }
 
         @media (max-width: 768px) {
@@ -833,48 +898,85 @@
         </section>
     </main>
 
-    <!-- ================= PAGE 2: ABOUT US ================= -->
+    <!-- ================= PAGE 2: ABOUT US (UPDATED VERBATIM) ================= -->
     <main id="about" class="page">
         <section class="section-padding container">
             <h2 class="section-title">About Us</h2>
-            <p class="section-subtitle">Dedicated to discovering practical, scientific pathways for improving livability and thermal comfort across vulnerable hot desert urban areas.</p>
+            <p class="section-subtitle">A joint initiative between RAK Municipality and the American University of Ras Al Khaimah.</p>
             
-            <div class="about-layout">
-                <div class="vision-mission-grid">
-                    <div class="vm-card">
-                        <i class="fa-solid fa-eye"></i>
-                        <h3>Our Vision</h3>
-                        <p>To establish the RAK Center for Outdoor Comfort as an authoritative baseline hub across the GCC region for microclimate intelligence, steering urban development frameworks toward optimal ecological compatibility and thermal safety.</p>
-                    </div>
-                    <div class="vm-card red-top">
-                        <i class="fa-solid fa-bullseye"></i>
-                        <h3>Our Mission</h3>
-                        <p>To systematically measure, map, and mitigate urban heat island intensities throughout Ras Al Khaimah through modern GIS infrastructure, empirical data modeling, community surveys, and actionable design handbooks.</p>
-                    </div>
-                </div>
+            <div class="about-text-block">
+                <p>RAK Center for Outdoor Comfort (RAKCOC), a joint initiative between RAK Municipality and AURAK, focuses on practical applied research on outdoor comfort in the Middle East region. The Scientific program of this feasibility period primarily aims to support adopting outdoor thermal comfort solutions in Ras Al Khaimah and the region through modeling testing and implementing activities that provide various services, such as design advisory and guidelines, education, testing, etc.</p>
+                <p>In its development strategy, the Center plans to expand its scope to adjacent fields such as micro-climate management, climate change adaptation, outdoor landscape design, urban heat island reduction, Nature Based Solutions (NBS), and others as may be relevant.</p>
+            </div>
 
-                <div>
-                    <h3 class="section-title" style="font-size: 2rem; margin-bottom:40px;">Our Team</h3>
-                    <div class="team-grid">
-                        <div class="team-card">
-                            <div class="team-avatar"><i class="fa-solid fa-user-tie"></i></div>
-                            <h4>Dr. Ahmed Al-Mansoori</h4>
-                            <p>Director & Lead Researcher</p>
+            <div class="vision-mission-grid">
+                <div class="vm-card">
+                    <i class="fa-solid fa-eye"></i>
+                    <h3>Vision</h3>
+                    <p>RAKCOC is the first center in the Middle East to focus on a better understanding of the richness of microclimatic characteristics in outdoor urban spaces and the comfort implications for the people using them. By controlling sources of discomfort, sedentary activities, as well as the use of public transport, cycling, and walking, are promoted. The ultimate goal is to create thriving spaces that attract and accommodate a substantial number of people.</p>
+                </div>
+                <div class="vm-card red-top">
+                    <i class="fa-solid fa-bullseye"></i>
+                    <h3>Mission</h3>
+                    <p>RAKOC attempts to understand the thermal conditions outdoors. Models are currently unavailable for hot and humid countries, and solutions still need to be well-designed. There needs to be a greater understanding of the physical and human parameters in these spaces and the subjective responses of end users. The center also relies on research based on feedback from facilities equipped with instruments and long-term monitoring.</p>
+                </div>
+            </div>
+
+            <!-- OUR TEAM SECTION -->
+            <div>
+                <h3 class="section-title" style="font-size: 2rem; margin-bottom:10px;">Our Team</h3>
+                <p class="section-subtitle">The specialized scientific researchers and operational personnel directing RAKCOC.</p>
+                
+                <div class="team-list">
+                    <!-- Member 1 -->
+                    <div class="team-member-row">
+                        <div class="member-profile-icon"><i class="fa-solid fa-user-tie"></i></div>
+                        <div class="member-details">
+                            <div class="member-header">
+                                <h4>Prof. Youssef Diab</h4>
+                                <span class="title">Director, RAK Center for Outdoor Comfort</span>
+                            </div>
+                            <p class="member-bio">Director, RAK Center for Outdoor Comfort at AURAK; Professor of Urban Sustainable Planning and Engineering in France at University Gustave Eiffel. Specialist in urban resilience, climate adaptation, and outdoor thermal comfort; Scientific Director of France’s ISSU National Program and leader of major international research projects on sustainable cities.</p>
+                            <a href="mailto:youssef.diab@aurak.ac.ae" class="member-email"><i class="fa-solid fa-envelope"></i> youssef.diab@aurak.ac.ae</a>
                         </div>
-                        <div class="team-card">
-                            <div class="team-avatar"><i class="fa-solid fa-user-gear"></i></div>
-                            <h4>Prof. Sarah Linnaeus</h4>
-                            <p>Senior Urban Climatologist</p>
+                    </div>
+
+                    <!-- Member 2 -->
+                    <div class="team-member-row">
+                        <div class="member-profile-icon"><i class="fa-solid fa-user-gear"></i></div>
+                        <div class="member-details">
+                            <div class="member-header">
+                                <h4>Eng. Abdelrahman Masood</h4>
+                                <span class="title">Civil and Infrastructure Research Lab Engineer</span>
+                            </div>
+                            <p class="member-bio">Civil and Infrastructure Research Lab Engineer, RAK Center for Outdoor Comfort at AURAK; master’s student in Project Management; specializing in GIS, spatial analysis, field measurements, and research implementation for outdoor thermal comfort and urban climate studies.</p>
+                            <a href="mailto:t.abdelrahmanmasood@aurak.ac.ae" class="member-email"><i class="fa-solid fa-envelope"></i> t.abdelrahmanmasood@aurak.ac.ae</a>
                         </div>
-                        <div class="team-card">
-                            <div class="team-avatar"><i class="fa-solid fa-user-astronaut"></i></div>
-                            <h4>Eng. Tariq Al-Shehhi</h4>
-                            <p>GIS & Spatial Analyst Lead</p>
+                    </div>
+
+                    <!-- Member 3 -->
+                    <div class="team-member-row">
+                        <div class="member-profile-icon"><i class="fa-solid fa-bolt"></i></div>
+                        <div class="member-details">
+                            <div class="member-header">
+                                <h4>Eng. Waqar ullah Kazim</h4>
+                                <span class="title">Electrical R&D Engineer</span>
+                            </div>
+                            <p class="member-bio">Electrical R&D Engineer, RAK Center for Outdoor Comfort at AURAK; MSc in Applied Physics (Electronics); specializing in electrical systems, power electronics, industrial electronics, and automation, supporting research and development for urban climate and outdoor comfort applications.</p>
+                            <a href="mailto:waqar.ullah@aurak.ac.ae" class="member-email"><i class="fa-solid fa-envelope"></i> waqar.ullah@aurak.ac.ae</a>
                         </div>
-                        <div class="team-card">
-                            <div class="team-avatar"><i class="fa-solid fa-user"></i></div>
-                            <h4>Fatima Al-Zaabi</h4>
-                            <p>Research Fellow</p>
+                    </div>
+
+                    <!-- Member 4 -->
+                    <div class="team-member-row">
+                        <div class="member-profile-icon"><i class="fa-solid fa-user-folder"></i></div>
+                        <div class="member-details">
+                            <div class="member-header">
+                                <h4>Ms. Ivy Tanedo</h4>
+                                <span class="title">Office Administrator</span>
+                            </div>
+                            <p class="member-bio">Office Administrator, RAK Center for Outdoor Comfort at AURAK; responsible for administrative coordination, documentation, and operational support for research activities.</p>
+                            <a href="mailto:ivy.tanedo@aurak.ac.ae" class="member-email"><i class="fa-solid fa-envelope"></i> ivy.tanedo@aurak.ac.ae</a>
                         </div>
                     </div>
                 </div>
@@ -1106,7 +1208,6 @@
 
             <!-- EMBEDDED MAP DISPLAY -->
             <div class="map-section">
-                <!-- Generic high-quality OpenStreetMap placeholder view pointing to AURAK Area coordinates -->
                 <iframe src="https://www.google.com/maps/embed?pb=!11m1!12m1!13m1!14m1!1s0x3ef609ec2543fa37:0xecbf3a62846f480c!2sAmerican+University+of+Ras+Al+Khaimah+(AURAK)!5m2!1sen!2sae" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </section>
@@ -1133,22 +1234,18 @@
 
     <!-- ================= ROUTING LOGIC & USER INTERACTION SCRIPT ================= -->
     <script>
-        // Smooth Multi-Page App Engine 
         function navigateTo(pageId, event) {
             if(event) event.preventDefault();
             
-            // Step 1: Hide all pages safely
             const pages = document.querySelectorAll('.page');
             pages.forEach(page => page.classList.remove('active'));
             
-            // Step 2: Unveil target active view state
             const targetPage = document.getElementById(pageId);
             if(targetPage) {
                 targetPage.classList.add('active');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
             
-            // Step 3: Handle navigation tracking classes updates
             const navLinks = document.querySelectorAll('.nav-link');
             navLinks.forEach(link => {
                 link.classList.remove('active');
@@ -1157,12 +1254,10 @@
                 }
             });
 
-            // Close Mobile Dropdown Navbar on Click Menu Selection
             const menuList = document.getElementById('nav-menu-list');
             menuList.classList.remove('active');
         }
 
-        // Mobile Hamburger Toggle Management
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const navMenuList = document.getElementById('nav-menu-list');
 
@@ -1170,7 +1265,6 @@
             navMenuList.classList.toggle('active');
         });
 
-        // Prevention logic for placeholder layout elements
         function preventDev(e) {
             e.preventDefault();
             alert("This document is a placeholder asset for the RAKCOC live demo presentation.");
